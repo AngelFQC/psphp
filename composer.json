@@ -1,0 +1,21 @@
+{
+    "name": "angelfqc/survey_parser",
+    "description": "Parser for CSV files from Google Form surveys",
+    "type": "project",
+    "license": "LGPL-3.0-only",
+    "authors": [
+        {
+            "name": "Angel Fernando Quiroz Campos",
+            "email": "angelfqc.18@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SurveyParser\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.2",
+        "symfony/console": "^4.2"
+    }
+}
