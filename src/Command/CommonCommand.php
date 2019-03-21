@@ -5,7 +5,6 @@ namespace SurveyParser\Command;
 
 use League\Csv\Reader;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -73,6 +72,7 @@ abstract class CommonCommand extends Command
         }
 
         $this->variablesReader = Reader::createFromPath($variablesPath, 'r');
+        $this->variablesReader->setHeaderOffset(0);
 
         return true;
     }
@@ -93,7 +93,7 @@ abstract class CommonCommand extends Command
             return $columnIndex;
         }
 
-        $dataHeader = $this->dataReader->getHeader();
+        $dataHeader = $this->variablesReader->getHeader();
 
         $columnIndex = array_search($variableName, $dataHeader);
 
@@ -139,5 +139,24 @@ abstract class CommonCommand extends Command
         $data = array_column($records, $variableName);
 
         return $data;
+    }
+
+    /**
+     * @param int  $variableIndex
+     * @param bool $filterNulls
+     *
+     * @return array
+     */
+    protected function getDataByIndex(int $variableIndex, bool $filterNulls = false): array
+    {
+        $dataColumn = iterator_to_array(
+            $this->dataReader->fetchColumn($variableIndex)
+        );
+
+        if (!$filterNulls) {
+            return $dataColumn;
+        }
+
+        return array_filter($dataColumn);
     }
 }

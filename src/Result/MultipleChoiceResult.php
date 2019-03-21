@@ -13,23 +13,11 @@ class MultipleChoiceResult
     /**
      * @var string
      */
-    protected $variableName;
-    /**
-     * @var string
-     */
     protected $displayText;
     /**
      * @var array
      */
     protected $options;
-
-    /**
-     * @return string
-     */
-    public function getVariableName(): string
-    {
-        return $this->variableName;
-    }
 
     /**
      * @return string
@@ -81,7 +69,6 @@ class MultipleChoiceResult
      */
     public function __construct(array $variableData)
     {
-        $this->variableName = array_shift($variableData);
         $this->displayText = array_shift($variableData);
         $this->options = $variableData;
     }
