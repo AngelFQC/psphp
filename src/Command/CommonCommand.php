@@ -107,6 +107,10 @@ abstract class CommonCommand extends Command
      */
     protected function getVariable(string $variableName): array
     {
+        if (!in_array($variableName, $this->variablesReader->getHeader())) {
+            throw new \Exception("Variable $variableName not found.");
+        }
+
         $variableColumn = $this->variablesReader->fetchColumn($variableName);
         $variableColumn = iterator_to_array($variableColumn);
 
