@@ -93,7 +93,7 @@ abstract class CommonCommand extends Command
             return $columnIndex;
         }
 
-        $dataHeader = $this->variablesReader->getHeader();
+        $dataHeader = $this->dataReader->getHeader();
 
         $columnIndex = array_search($variableName, $dataHeader);
 
@@ -113,9 +113,7 @@ abstract class CommonCommand extends Command
      */
     protected function getVariable(string $variableName): array
     {
-        $columnIndex = $this->getVariableIndex($variableName);
-
-        $variableColumn = $this->variablesReader->fetchColumn($columnIndex);
+        $variableColumn = $this->variablesReader->fetchColumn($variableName);
         $variableColumn = iterator_to_array($variableColumn);
 
         $variable = array_filter($variableColumn);
