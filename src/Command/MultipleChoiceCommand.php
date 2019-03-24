@@ -37,18 +37,15 @@ class MultipleChoiceCommand extends CommonCommand
      * @param OutputInterface $output
      *
      * @return void
-     * @throws \League\Csv\Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!parent::execute($input, $output)) {
-            return;
-        };
-
         $variableName = $input->getArgument('variable');
         $otherName = $input->getOption('other-name');
 
         try {
+            parent::execute($input, $output);
+
             $variable = $this->getVariable($variableName);
             $variableIndex = $this->getVariableIndex($variableName);
 

@@ -57,24 +57,18 @@ abstract class CommonCommand extends Command
         $variablesPath = $input->getOption('variables-path');
 
         if (!file_exists($dataPath)) {
-            $output->writeln('<error>Data file not found.</error>');
-
-            return false;
+            throw new \Exception('Data file not found.');
         }
 
         $this->dataReader = Reader::createFromPath($dataPath, 'r');
         $this->dataReader->setHeaderOffset(0);
 
         if (!file_exists($variablesPath)) {
-            $output->writeln('<error>Variables file not found.</error>');
-
-            return false;
+            throw new \Exception('Variables file not found.');
         }
 
         $this->variablesReader = Reader::createFromPath($variablesPath, 'r');
         $this->variablesReader->setHeaderOffset(0);
-
-        return true;
     }
 
     /**
