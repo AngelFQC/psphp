@@ -10,6 +10,7 @@ $application = new Application('Survey Parser', '0.1a');
 $application
     ->addCommands([
         new \SurveyParser\Command\MultipleChoiceCommand(),
+        new \SurveyParser\Command\MultipleAnswerCommand(),
     ]);
 
 $application->run();

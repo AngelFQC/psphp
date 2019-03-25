@@ -4,6 +4,7 @@
 namespace SurveyParser\Command;
 
 use League\Csv\Reader;
+use SurveyParser\Core\Variable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,6 +25,11 @@ abstract class CommonCommand extends Command
      * @var Reader
      */
     protected $variablesReader;
+
+    /**
+     * @var array|Variable[]
+     */
+    protected $variables;
 
     protected function configure()
     {
@@ -69,6 +75,12 @@ abstract class CommonCommand extends Command
 
         $this->variablesReader = Reader::createFromPath($variablesPath, 'r');
         $this->variablesReader->setHeaderOffset(0);
+
+        foreach ($this->variablesReader->getHeader() as $header) {
+            $variableInfo = $this->variablesReader->fetchColumn($header);
+
+            $this->variables[$header] = new Variable($header, $variableInfo);
+        }
     }
 
     /**
@@ -130,9 +142,8 @@ abstract class CommonCommand extends Command
      */
     protected function getDataByVariable(string $variableName): array
     {
-        $records = $this->dataReader->getRecords();
-        $records = iterator_to_array($records);
-        $data = array_column($records, $variableName);
+        $records = $this->dataReader->fetchColumn($variableName);
+        $data = iterator_to_array($records);
 
         return $data;
     }
