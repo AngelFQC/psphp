@@ -1,14 +1,14 @@
 <?php
 /* For licensing terms, see LICENSE */
 
-namespace SurveyParser\Result;
+namespace ProcessSurveyPHP\Result;
 
-use SurveyParser\Core\Variable;
+use ProcessSurveyPHP\Core\Variable;
 
 /**
  * Class MultipleAnswerResult.
  *
- * @package SurveyParser\Result
+ * @package ProcessSurveyPHP\Result
  */
 class MultipleAnswerResult
 {

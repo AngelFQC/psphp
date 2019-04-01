@@ -1,10 +1,10 @@
 <?php
 /* For licensing terms, see LICENSE */
 
-namespace SurveyParser\Command;
+namespace ProcessSurveyPHP\Command;
 
 use League\Csv\Reader;
-use SurveyParser\Core\Variable;
+use ProcessSurveyPHP\Core\Variable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class CommonCommand.
  *
- * @package SurveyParser\Command
+ * @package ProcessSurveyPHP\Command
  */
 abstract class CommonCommand extends Command
 {
@@ -54,7 +54,6 @@ abstract class CommonCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return bool|int|null
      * @throws \League\Csv\Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)

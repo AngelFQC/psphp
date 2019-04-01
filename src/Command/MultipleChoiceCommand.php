@@ -1,9 +1,9 @@
 <?php
 /* For licensing terms, see LICENSE */
 
-namespace SurveyParser\Command;
+namespace ProcessSurveyPHP\Command;
 
-use SurveyParser\Result\MultipleChoiceResult;
+use ProcessSurveyPHP\Result\MultipleChoiceResult;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Helper\TableStyle;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class MultipleChoiceCommand.
  *
- * @package SurveyParser\Command
+ * @package ProcessSurveyPHP\Command
  */
 class MultipleChoiceCommand extends CommonCommand
 {

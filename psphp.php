@@ -9,8 +9,8 @@ $application = new Application('Survey Parser', '0.1a');
 
 $application
     ->addCommands([
-        new \SurveyParser\Command\MultipleChoiceCommand(),
-        new \SurveyParser\Command\MultipleAnswerCommand(),
+        new \ProcessSurveyPHP\Command\MultipleChoiceCommand(),
+        new \ProcessSurveyPHP\Command\MultipleAnswerCommand(),
     ]);
 
 $application->run();

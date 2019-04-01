@@ -1,12 +1,12 @@
 <?php
 /* For licensing terms, see LICENSE */
 
-namespace SurveyParser\Core;
+namespace ProcessSurveyPHP\Core;
 
 /**
  * Class Variable.
  *
- * @package SurveyParser\Core
+ * @package ProcessSurveyPHP\Core
  */
 class Variable
 {

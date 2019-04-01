@@ -1,7 +1,7 @@
 <?php
 /* For licensing terms, see LICENSE */
 
-namespace SurveyParser\Result;
+namespace ProcessSurveyPHP\Result;
 
 /**
  * Class MultipleChoiceResult.
