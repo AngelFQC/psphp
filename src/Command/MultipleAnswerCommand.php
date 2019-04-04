@@ -21,9 +21,6 @@ class MultipleAnswerCommand extends CommonCommand
 {
     protected static $defaultName = "multiple_answer";
 
-    /** @var MultipleAnswerResult */
-    private $result;
-
     protected function configure()
     {
         parent::configure();
@@ -32,6 +29,8 @@ class MultipleAnswerCommand extends CommonCommand
             ->setDescription('Parse a multiple answer question.')
             ->setHelp('This command allows you to parse a multiple answer question.')
             ->addArgument('variables', InputArgument::IS_ARRAY, 'Variable names to process.')
+            ->addOption('dichotomy', 'd', InputOption::VALUE_NONE, 'Dichotomy')
+            ->addOption('count-value', null, InputOption::VALUE_OPTIONAL, 'Count value for dichotomy.', 1)
             ->addOption('label', 'l', InputOption::VALUE_REQUIRED, 'Label for this group of variable.');
     }
 
@@ -45,6 +44,8 @@ class MultipleAnswerCommand extends CommonCommand
     {
         $variableNames = $input->getArgument('variables');
         $label = $input->getOption('label');
+        $isDichotomy = $input->getOption('dichotomy');
+        $countedValue = 0;
 
         try {
             if (empty($variableNames)) {
@@ -60,17 +61,20 @@ class MultipleAnswerCommand extends CommonCommand
 
                 throw new \Exception('Variable "'.$variableName.'" not found.');
             }
+
+            if ($isDichotomy) {
+                $countedValue = (int) $input->getOption('count-value');
+            }
         } catch (\Exception $exception) {
             $output->writeln("<error>{$exception->getMessage()}</error>");
 
             return;
         }
 
-        $this->result = new MultipleAnswerResult();
+        $result = new MultipleAnswerResult($isDichotomy, $countedValue);
 
         foreach ($variableNames as $variableName) {
-            $this
-                ->result
+            $result
                 ->addVariable($this->variables[$variableName])
                 ->addDataByVariable(
                     $variableName,
@@ -78,7 +82,7 @@ class MultipleAnswerCommand extends CommonCommand
                 );
         }
 
-        $statistics = $this->result->process(
+        $statistics = $result->process(
             $this->dataReader->count()
         );
 

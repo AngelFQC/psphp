@@ -22,6 +22,21 @@ class MultipleAnswerResult
     private $dataByVariable;
 
     /**
+     * @var bool
+     */
+    private $isDichotomy;
+    /**
+     * @var int
+     */
+    private $countedValue;
+
+    public function __construct(bool $isDichotomy, int $countedValue)
+    {
+        $this->isDichotomy = $isDichotomy;
+        $this->countedValue = $countedValue;
+    }
+
+    /**
      * @param Variable $variable
      *
      * @return $this
@@ -55,19 +70,36 @@ class MultipleAnswerResult
 
         foreach ($this->variables as $variable) {
             $variableName = $variable->getName();
-            $variableValues = $variable->getValues();
 
             $counts = array_count_values(
                 $this->dataByVariable[$variableName]
             );
 
-            foreach ($variableValues as $variableValue) {
-                if (!isset($results[$variableValue])) {
-                    $results[$variableValue] = 0;
+            if (!$this->isDichotomy) {
+                $variableValues = $variable->getValues();
+
+                foreach ($variableValues as $variableValue) {
+                    if (!isset($results[$variableValue])) {
+                        $results[$variableValue] = 0;
+                    }
+
+                    if (isset($counts[$variableValue])) {
+                        $results[$variableValue] += $counts[$variableValue];
+                    }
+                }
+            } else {
+                if (!in_array($this->countedValue, $variable->getValues())) {
+                    continue;
                 }
 
-                if (isset($counts[$variableValue])) {
-                    $results[$variableValue] += $counts[$variableValue];
+                $variableValues = [$this->countedValue];
+
+                foreach ($variableValues as $variableValue) {
+                    if (!isset($results[$variableName])) {
+                        $results[$variable->getLabel()] = 0;
+                    }
+
+                    $results[$variable->getLabel()] += $counts[$variableValue];
                 }
             }
         }
