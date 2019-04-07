@@ -30,8 +30,8 @@ class MultipleAnswerCommand extends CommonCommand
             ->setHelp('This command allows you to parse a multiple answer question.')
             ->addArgument('variables', InputArgument::IS_ARRAY, 'Variable names to process.')
             ->addOption('dichotomy', 'd', InputOption::VALUE_NONE, 'Dichotomy')
-            ->addOption('count-value', null, InputOption::VALUE_OPTIONAL, 'Count value for dichotomy.', 1)
-            ->addOption('label', 'l', InputOption::VALUE_REQUIRED, 'Label for this group of variable.');
+            ->addOption('counted-value', null, InputOption::VALUE_OPTIONAL, 'Count value for dichotomy.', 1)
+            ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Label for this group of variable.');
     }
 
     /**
