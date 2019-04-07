@@ -28,7 +28,12 @@ class Variable
 
         $this->name = $name;
         $this->label = array_shift($info);
-        $this->values = array_filter($info);
+
+        $info = array_filter($info);
+
+        for ($i = 0; $i < count($info); $i++) {
+            $this->values[$i + 1] = $info[$i];
+        }
     }
 
     /**
@@ -53,5 +58,14 @@ class Variable
     public function getValues(): array
     {
         return $this->values;
+    }
+
+    public function getValue($key)
+    {
+        if (!array_key_exists($key, $this->values)) {
+            return null;
+        }
+
+        return $this->values[$key];
     }
 }

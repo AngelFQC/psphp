@@ -68,6 +68,22 @@ class MultipleAnswerResult
     {
         $results = [];
 
+        if (!$this->isDichotomy) {
+            foreach ($this->variables as $variable) {
+                foreach ($variable->getValues() as $value) {
+                    if (!isset($results[$value])) {
+                        $results[$value] = 0;
+                    }
+                }
+            }
+        } else {
+            foreach ($this->variables as $variable) {
+                if (!isset($results[$variable->getLabel()])) {
+                    $results[$variable->getLabel()] = 0;
+                }
+            }
+        }
+
         foreach ($this->variables as $variable) {
             $variableName = $variable->getName();
 
@@ -76,31 +92,23 @@ class MultipleAnswerResult
             );
 
             if (!$this->isDichotomy) {
-                $variableValues = $variable->getValues();
-
-                foreach ($variableValues as $variableValue) {
-                    if (!isset($results[$variableValue])) {
-                        $results[$variableValue] = 0;
+                foreach ($counts as $key => $count) {
+                    if (!array_key_exists($key, $variable->getValues())) {
+                        continue;
                     }
 
-                    if (isset($counts[$variableValue])) {
-                        $results[$variableValue] += $counts[$variableValue];
-                    }
+                    $label = $variable->getValue($key);
+
+                    $results[$label] += $count;
                 }
             } else {
-                if (!in_array($this->countedValue, $variable->getValues())) {
+                if (!array_key_exists($this->countedValue, $counts)) {
                     continue;
                 }
 
-                $variableValues = [$this->countedValue];
+                $label = $variable->getLabel();
 
-                foreach ($variableValues as $variableValue) {
-                    if (!isset($results[$variableName])) {
-                        $results[$variable->getLabel()] = 0;
-                    }
-
-                    $results[$variable->getLabel()] += $counts[$variableValue];
-                }
+                $results[$label] += $counts[$this->countedValue];
             }
         }
 
