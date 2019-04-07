@@ -63,7 +63,7 @@ class MultipleAnswerCommand extends CommonCommand
             }
 
             if ($isDichotomy) {
-                $countedValue = (int) $input->getOption('count-value');
+                $countedValue = (int) $input->getOption('counted-value');
             }
         } catch (\Exception $exception) {
             $output->writeln("<error>{$exception->getMessage()}</error>");
