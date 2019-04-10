@@ -1,6 +1,6 @@
 {
-    "name": "angelfqc/survey_parser",
-    "description": "Parser for CSV files from Google Form surveys",
+    "name": "angelfqc/psphp",
+    "description": "Process Survey With PHP",
     "type": "project",
     "license": "LGPL-3.0-only",
     "authors": [
