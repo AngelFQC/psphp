@@ -3,6 +3,8 @@
 
 namespace ProcessSurveyPHP\Result;
 
+use ProcessSurveyPHP\Core\Variable;
+
 /**
  * Class MultipleChoiceResult.
  *
@@ -10,6 +12,14 @@ namespace ProcessSurveyPHP\Result;
  */
 class MultipleChoiceResult
 {
+    /**
+     * @var Variable
+     */
+    private $variable;
+    /**
+     * @var array
+     */
+    private $dataByVariable;
     /**
      * @var string
      */
@@ -64,12 +74,89 @@ class MultipleChoiceResult
 
     /**
      * MultipleChoiceResult constructor.
-     *
-     * @param array $variableData
      */
-    public function __construct(array $variableData)
+    public function __construct()
     {
-        $this->displayText = array_shift($variableData);
-        $this->options = $variableData;
+    }
+
+    /**
+     * @return Variable
+     */
+    public function getVariable(): Variable
+    {
+        return $this->variable;
+    }
+
+    /**
+     * @param Variable $variable
+     *
+     * @return MultipleChoiceResult
+     */
+    public function setVariable(Variable $variable): MultipleChoiceResult
+    {
+        $this->variable = $variable;
+
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return MultipleChoiceResult
+     */
+    public function setDataByVariable(array $data): MultipleChoiceResult
+    {
+        $this->dataByVariable = $data;
+
+        return $this;
+    }
+
+    public function calculate(): array
+    {
+        $results = [];
+
+        foreach ($this->variable->getValues() as $value) {
+            if (!isset($results[$value])) {
+                $results[$value] = 0;
+            }
+        }
+
+        $counts = array_count_values($this->dataByVariable);
+
+        foreach ($counts as $key => $count) {
+            if (!array_key_exists($key, $this->variable->getValues())) {
+                continue;
+            }
+
+            $label = $this->variable->getValue($key);
+
+            $results[$label] += $count;
+        }
+
+        return $results;
+    }
+
+    public function process(int $recordsTotal): array
+    {
+        $results = $this->calculate();
+
+        $statistics = array_map(
+            function ($result) use ($recordsTotal) {
+                return [
+                    $result,
+                    $result / $recordsTotal * 100,
+                ];
+            },
+            $results
+        );
+
+
+        return [
+            'rows' => $statistics,
+            'totals' => [
+                array_sum(array_column($statistics, 0)),
+                array_sum(array_column($statistics, 1)),
+            ],
+        ];
     }
 }

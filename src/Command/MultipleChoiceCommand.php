@@ -44,16 +44,14 @@ class MultipleChoiceCommand extends CommonCommand
         $otherName = $input->getOption('other-name');
 
         try {
+            if (empty($variableName)) {
+                throw new \Exception('Please enter variable name to process');
+            }
+
             parent::execute($input, $output);
 
-            $variable = $this->getVariable($variableName);
-            $variableIndex = $this->getVariableIndex($variableName);
-
-            $data = $this->getDataByVariable($variableName);
-
-            if (!empty($otherName)) {
-                $otherData = $this->getDataByIndex($variableIndex + 1);
-                $otherResults = $this->generateOtherResults($otherName, $variable, $otherData);
+            if (!array_key_exists($variableName, $this->variables)) {
+                throw new \Exception('Variable "'.$variableName.'" not found.');
             }
         } catch (\Exception $exception) {
             $output->writeln("<error>{$exception->getMessage()}</error>");
@@ -61,72 +59,66 @@ class MultipleChoiceCommand extends CommonCommand
             return;
         }
 
-        $results = $this->generateResults($variable, $data);
+        $result = new MultipleChoiceResult();
+        $result
+            ->setVariable($this->variables[$variableName])
+            ->setDataByVariable(
+                $this->getDataByVariable($variableName)
+            );
+
+        $statistics = $result->process(
+            $this->dataReader->count()
+        );
 
         $styleRight = new TableStyle();
         $styleRight->setPadType(STR_PAD_LEFT);
 
         $table = new Table($output);
-        $table->setHeaders($results['header']);
-        $table->setRows($results['rows']);
+        $table->setHeaders(
+            [
+                $result->getVariable()->getLabel(),
+                'N',
+                'Cases %'
+            ]
+        );
+
+        foreach ($statistics['rows'] as $option => $cols) {
+            $table->addRow(
+                [
+                    $option,
+                    $cols[0],
+                    number_format($cols[1], 2),
+                ]
+            );
+        }
+
         $table->addRow(new TableSeparator());
-        $table->addRow($results['footer']);
-        $table->setStyle('box');
+        $table->addRow(
+            [
+                'Total',
+                $statistics['totals'][0],
+                number_format($statistics['totals'][1], 2)
+            ]
+        );
         $table->setColumnStyle(1, $styleRight);
         $table->setColumnStyle(2, $styleRight);
+        $table->setStyle('box');
         $table->render();
 
-        if (!empty($otherResults)) {
-            $table = new Table($output);
-            $table->setHeaders($otherResults['header']);
-            $table->setRows($otherResults['rows']);
-            $table->addRow(new TableSeparator());
-            $table->addRow($otherResults['footer']);
-            $table->setColumnStyle(1, $styleRight);
-            $table->setColumnStyle(2, $styleRight);
-            $table->setColumnStyle(3, $styleRight);
-            $table->setStyle('box');
-            $table->render();
-        }
+//        if (!empty($otherResults)) {
+//            $table = new Table($output);
+//            $table->setHeaders($otherResults['header']);
+//            $table->setRows($otherResults['rows']);
+//            $table->addRow(new TableSeparator());
+//            $table->addRow($otherResults['footer']);
+//            $table->setColumnStyle(1, $styleRight);
+//            $table->setColumnStyle(2, $styleRight);
+//            $table->setColumnStyle(3, $styleRight);
+//            $table->setStyle('box');
+//            $table->render();
+//        }
     }
 
-    /**
-     * @param array $variable
-     * @param array $data
-     *
-     * @return array
-     */
-    private function generateResults(array $variable, array $data): array
-    {
-        $multipleChoiceResult = new MultipleChoiceResult($variable);
-
-        $results = $multipleChoiceResult->getResults($data);
-        $percentages = $multipleChoiceResult->getPercents($results);
-
-        $rows = [];
-
-        foreach ($results as $option => $count) {
-            $rows[] = [
-                $option,
-                $count,
-                number_format($percentages[$option], 2),
-            ];
-        }
-
-        return [
-            'header' => [
-                $multipleChoiceResult->getDisplayText(),
-                'N',
-                '%'
-            ],
-            'rows' => $rows,
-            'footer' => [
-                'Total',
-                array_sum($results),
-                number_format(array_sum($percentages), 2)
-            ],
-        ];
-    }
 
     /**
      * @param string $name
