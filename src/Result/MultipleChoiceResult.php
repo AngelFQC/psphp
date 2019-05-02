@@ -136,9 +136,11 @@ class MultipleChoiceResult
         return $results;
     }
 
-    public function process(int $recordsTotal): array
+    public function process(): array
     {
+        $this->dataByVariable = array_filter($this->dataByVariable);
         $results = $this->calculate();
+        $recordsTotal = array_sum($results);
 
         $statistics = array_map(
             function ($result) use ($recordsTotal) {
@@ -149,7 +151,6 @@ class MultipleChoiceResult
             },
             $results
         );
-
 
         return [
             'rows' => $statistics,

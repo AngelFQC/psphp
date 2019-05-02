@@ -66,9 +66,7 @@ class MultipleChoiceCommand extends CommonCommand
                 $this->getDataByVariable($variableName)
             );
 
-        $statistics = $result->process(
-            $this->dataReader->count()
-        );
+        $statistics = $result->process();
 
         $styleRight = new TableStyle();
         $styleRight->setPadType(STR_PAD_LEFT);
